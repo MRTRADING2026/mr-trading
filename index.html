@@ -1,19 +1,920 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MR Trading</title><style>body{font-family:Arial;margin:0;background:#f5f5f5;color:#111}header{background:#111;color:#fff;padding:16px}.bar,main{max-width:1100px;margin:auto}.bar{display:flex;justify-content:space-between;align-items:center}.logo{font-size:24px;font-weight:800}button{padding:10px 14px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}.admin{background:#fff}.hero{background:#222;color:#fff;padding:45px 18px}.hero>div{max-width:1100px;margin:auto}.wrap{padding:25px 18px}#panel{display:none;background:#fff;padding:20px;border-radius:12px;margin-bottom:25px}.form{max-width:600px;display:grid;gap:10px}.form input{padding:12px;border:1px solid #ccc;border-radius:7px}.save{background:#111;color:#fff}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #ddd}.pic{height:180px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:55px}.pic img{width:100%;height:100%;object-fit:cover}.info{padding:14px}.price{font-size:20px;font-weight:bold;margin:8px 0}.order{background:#111;color:#fff;width:100%}.row{background:#eee;padding:12px;margin:8px 0;border-radius:8px;display:flex;justify-content:space-between}.del{background:#d33;color:#fff}.edit{background:#ddd}@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:450px){.grid{gap:9px}.pic{height:145px}.row{flex-direction:column}}</style></head><body>
-<header><div class="bar"><b class="logo">MR Trading</b><button class="admin" onclick="toggle()">⚙️ Admin</button></div></header>
-<section class="hero"><div><h1>MR Trading</h1><p>Quality Accessories at Best Price</p></div></section>
-<main class="wrap"><section id="panel"><h2>Admin Panel</h2><p id="msg">Product যোগ/পরিবর্তন করুন</p><div class="form"><input id="name" placeholder="Product name"><input id="price" type="number" placeholder="Price (৳)"><input id="category" placeholder="Category"><input id="photo" type="file" accept="image/*"><button class="save" onclick="saveProduct()">💾 Save Product</button><button onclick="clearForm()">Clear</button></div><h3>Manage Products</h3><div id="manage"></div></section><h2>Products</h2><div id="products" class="grid">Loading...</div></main>
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MR Trading</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  margin:0;
+  background:#f5f5f5;
+  color:#111;
+}
+
+header{
+  background:#111;
+  color:#fff;
+  padding:16px;
+}
+
+.bar,main{
+  max-width:1100px;
+  margin:auto;
+}
+
+.bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+}
+
+button{
+  padding:10px 14px;
+  border:0;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.admin{
+  background:#fff;
+}
+
+.hero{
+  background:#222;
+  color:#fff;
+  padding:45px 18px;
+}
+
+.hero>div{
+  max-width:1100px;
+  margin:auto;
+}
+
+.wrap{
+  padding:25px 18px;
+}
+
+#panel{
+  display:none;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:25px;
+}
+
+.form{
+  max-width:600px;
+  display:grid;
+  gap:10px;
+}
+
+.form input{
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:7px;
+  font-size:16px;
+}
+
+.save{
+  background:#111;
+  color:#fff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+.card{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid #ddd;
+}
+
+.pic{
+  height:180px;
+  background:#eee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+}
+
+.pic img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.info{
+  padding:14px;
+}
+
+.price{
+  font-size:20px;
+  font-weight:bold;
+  margin:8px 0;
+}
+
+.order{
+  background:#111;
+  color:#fff;
+  width:100%;
+}
+
+.row{
+  background:#eee;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.del{
+  background:#d33;
+  color:#fff;
+}
+
+.edit{
+  background:#ddd;
+}
+
+#msg{
+  font-weight:bold;
+}
+
+@media(max-width:800px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:450px){
+  .grid{
+    gap:9px;
+  }
+
+  .pic{
+    height:145px;
+  }
+
+  .row{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="bar">
+    <b class="logo">MR Trading</b>
+    <button class="admin" onclick="toggleAdmin()">⚙️ Admin</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>MR Trading</h1>
+    <p>Quality Accessories at Best Price</p>
+  </div>
+</section>
+
+<main class="wrap">
+
+<section id="panel">
+
+<h2>Admin Panel</h2>
+
+<p id="msg">Product যোগ/পরিবর্তন করুন</p>
+
+<div class="form">
+
+<input id="productName" placeholder="Product name">
+
+<input id="productPrice"
+       type="number"
+       placeholder="Price (৳)">
+
+<input id="productCategory"
+       placeholder="Category">
+
+<input id="productPhoto"
+       type="file"
+       accept="image/*">
+
+<button class="save"
+        type="button"
+        onclick="saveProduct()">
+💾 Save Product
+</button>
+
+<button type="button"
+        onclick="clearForm()">
+Clear
+</button>
+
+</div>
+
+<h3>Manage Products</h3>
+
+<div id="manage"></div>
+
+</section>
+
+<h2>Products</h2>
+
+<div id="products" class="grid">
+Loading...
+</div>
+
+</main>
+
 <script>
-const URL="https://nxbjswawumjdncnokiln.supabase.co",KEY="sb_publishable_VCBsBPD9Kp_rnMNEG8g7cA_0N75E-3C",BUCKET="product-images";let items=[],editId=null;
-const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
-async function req(path,opt={}){let r=await fetch(URL+path,{...opt,headers:{...H,...(opt.headers||{})}});let t=await r.text();if(!r.ok)throw Error(t);return t?JSON.parse(t):null}
-async function load(){try{items=await req("/rest/v1/products?select=*&order=created_at.desc")||[];draw()}catch(e){document.getElementById("products").innerHTML="<p>Load error. Supabase policy check করুন.</p>";console.log(e)}}
-function draw(){document.getElementById("products").innerHTML=items.length?items.map((x,i)=>`<div class="card"><div class="pic">${x.image_url?`<img src="${x.image_url}">`:"📦"}</div><div class="info"><b>${esc(x.name)}</b><div class="price">৳${esc(x.price)}</div><button class="order" onclick="wa('${esc(x.name)}','${esc(x.price)}')">WhatsApp Order</button></div></div>`).join(""):"<p>No products yet.</p>";document.getElementById("manage").innerHTML=items.map(x=>`<div class="row"><span><b>${esc(x.name)}</b><br>৳${esc(x.price)}</span><span><button class="edit" onclick="edit('${x.id}')">✏️ Edit</button> <button class="del" onclick="del('${x.id}')">Delete</button></span></div>`).join("")}
-async function saveProduct(){let n=name.value.trim(),pr=price.value.trim(),cat=category.value.trim(),f=photo.files[0];if(!n||!pr){msg.textContent="Name ও price দিন";return}try{let image="";if(editId){let old=items.find(x=>String(x.id)==String(editId));image=old?.image_url||""}if(f){let file=Date.now()+"_"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");let r=await fetch(URL+"/storage/v1/object/"+BUCKET+"/"+file,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":f.type||"application/octet-stream","x-upsert":"true"},body:f});if(!r.ok)throw Error(await r.text());image=URL+"/storage/v1/object/public/"+BUCKET+"/"+file}let body={name:n,price:Number(pr),category:cat,image_url:image};if(editId)await req("/rest/v1/products?id=eq."+editId,{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify(body)});else await req("/rest/v1/products",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify(body)});msg.textContent="Saved successfully";clearForm();load()}catch(e){msg.textContent="Error: "+e.message}}
-function edit(id){let x=items.find(a=>String(a.id)==String(id));editId=id;name.value=x.name;price.value=x.price;category.value=x.category||"";photo.value="";msg.textContent="Editing: "+x.name;scrollTo({top:0,behavior:"smooth"})}
-async function del(id){if(!confirm("Delete করবেন?"))return;try{await req("/rest/v1/products?id=eq."+id,{method:"DELETE"});load()}catch(e){alert(e.message)}}
-function clearForm(){editId=null;name.value="";price.value="";category.value="";photo.value=""}
-function toggle(){panel.style.display=panel.style.display=="block"?"none":"block";load()}
-function wa(n,p){alert("WhatsApp number এখনো সেট করা হয়নি।\nOrder: "+n+" | ৳"+p)}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]) )}
-load();
-</script></body></html>
+
+/* =========================
+   SUPABASE SETTINGS
+========================= */
+
+const SUPABASE_URL =
+"https://nxbjswawumjdncnokiln.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_VCBsBPD9Kp_rnMNEG8g7cA_0N75E-3C";
+
+const BUCKET =
+"product-images";
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let items = [];
+let editId = null;
+
+
+/* =========================
+   HTML ELEMENTS
+========================= */
+
+const panel =
+document.getElementById("panel");
+
+const msg =
+document.getElementById("msg");
+
+const nameInput =
+document.getElementById("productName");
+
+const priceInput =
+document.getElementById("productPrice");
+
+const categoryInput =
+document.getElementById("productCategory");
+
+const photoInput =
+document.getElementById("productPhoto");
+
+const productsDiv =
+document.getElementById("products");
+
+const manageDiv =
+document.getElementById("manage");
+
+
+/* =========================
+   SUPABASE HEADERS
+========================= */
+
+function headers(extra = {}){
+
+  return {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY,
+    "Content-Type": "application/json",
+    ...extra
+  };
+
+}
+
+
+/* =========================
+   SUPABASE REQUEST
+========================= */
+
+async function request(path, options = {}){
+
+  const response = await fetch(
+    SUPABASE_URL + path,
+    {
+      ...options,
+      headers: headers(options.headers || {})
+    }
+  );
+
+  const text = await response.text();
+
+  if(!response.ok){
+
+    throw new Error(
+      text || ("HTTP Error " + response.status)
+    );
+
+  }
+
+  if(!text){
+    return null;
+  }
+
+  return JSON.parse(text);
+
+}
+
+
+/* =========================
+   LOAD PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+  productsDiv.innerHTML = "Loading...";
+
+  try{
+
+    items = await request(
+      "/rest/v1/products?select=*&order=created_at.desc"
+    );
+
+    if(!Array.isArray(items)){
+      items = [];
+    }
+
+    drawProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    productsDiv.innerHTML =
+      "<p>Product load হচ্ছে না।</p>";
+
+    msg.textContent =
+      "Error: " + error.message;
+
+  }
+
+}
+
+
+/* =========================
+   DRAW PRODUCTS
+========================= */
+
+function drawProducts(){
+
+  if(items.length === 0){
+
+    productsDiv.innerHTML =
+      "<p>No products yet.</p>";
+
+  }else{
+
+    productsDiv.innerHTML =
+      items.map(function(product){
+
+        return `
+        <div class="card">
+
+          <div class="pic">
+
+            ${
+              product.image_url
+              ?
+              `<img src="${product.image_url}" alt="${esc(product.name)}">`
+              :
+              "📦"
+            }
+
+          </div>
+
+          <div class="info">
+
+            <b>${esc(product.name)}</b>
+
+            <div class="price">
+              ৳${esc(product.price)}
+            </div>
+
+            ${
+              product.category
+              ?
+              `<small>${esc(product.category)}</small>`
+              :
+              ""
+            }
+
+            <br><br>
+
+            <button
+              class="order"
+              onclick="whatsappOrder('${safeAttr(product.name)}','${safeAttr(product.price)}')">
+              WhatsApp Order
+            </button>
+
+          </div>
+
+        </div>
+        `;
+
+      }).join("");
+
+  }
+
+
+  /* Manage Products */
+
+  manageDiv.innerHTML =
+    items.map(function(product){
+
+      return `
+      <div class="row">
+
+        <span>
+          <b>${esc(product.name)}</b>
+          <br>
+          ৳${esc(product.price)}
+        </span>
+
+        <span>
+
+          <button
+            class="edit"
+            onclick="editProduct('${product.id}')">
+            ✏️ Edit
+          </button>
+
+          <button
+            class="del"
+            onclick="deleteProduct('${product.id}')">
+            Delete
+          </button>
+
+        </span>
+
+      </div>
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   SAVE PRODUCT
+========================= */
+
+async function saveProduct(){
+
+  const productName =
+    nameInput.value.trim();
+
+  const productPrice =
+    priceInput.value.trim();
+
+  const productCategory =
+    categoryInput.value.trim();
+
+  const file =
+    photoInput.files &&
+    photoInput.files.length
+      ?
+      photoInput.files[0]
+      :
+      null;
+
+
+  /* Validation */
+
+  if(!productName){
+
+    msg.textContent =
+      "❌ Product name দিন";
+
+    return;
+
+  }
+
+
+  if(!productPrice){
+
+    msg.textContent =
+      "❌ Price দিন";
+
+    return;
+
+  }
+
+
+  msg.textContent =
+    "⏳ Saving...";
+
+
+  try{
+
+    let imageUrl = "";
+
+
+    /* Existing image when editing */
+
+    if(editId){
+
+      const oldProduct =
+        items.find(function(product){
+
+          return String(product.id) ===
+                 String(editId);
+
+        });
+
+      if(oldProduct){
+
+        imageUrl =
+          oldProduct.image_url || "";
+
+      }
+
+    }
+
+
+    /* Upload image */
+
+    if(file){
+
+      msg.textContent =
+        "⏳ Image uploading...";
+
+
+      const fileName =
+        Date.now() +
+        "_" +
+        file.name.replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
+
+
+      const uploadResponse =
+        await fetch(
+
+          SUPABASE_URL +
+          "/storage/v1/object/" +
+          BUCKET +
+          "/" +
+          fileName,
+
+          {
+            method:"POST",
+
+            headers:{
+              "apikey":SUPABASE_KEY,
+              "Authorization":
+                "Bearer " + SUPABASE_KEY,
+              "Content-Type":
+                file.type ||
+                "application/octet-stream",
+              "x-upsert":"true"
+            },
+
+            body:file
+
+          }
+
+        );
+
+
+      if(!uploadResponse.ok){
+
+        const errorText =
+          await uploadResponse.text();
+
+        throw new Error(
+          "Image upload failed: " +
+          errorText
+        );
+
+      }
+
+
+      imageUrl =
+        SUPABASE_URL +
+        "/storage/v1/object/public/" +
+        BUCKET +
+        "/" +
+        fileName;
+
+    }
+
+
+    /* Product data */
+
+    const productData = {
+
+      name: productName,
+
+      price: Number(productPrice),
+
+      category: productCategory,
+
+      image_url: imageUrl
+
+    };
+
+
+    msg.textContent =
+      "⏳ Product saving...";
+
+
+    /* EDIT */
+
+    if(editId){
+
+      await request(
+        "/rest/v1/products?id=eq." +
+        encodeURIComponent(editId),
+
+        {
+          method:"PATCH",
+
+          headers:{
+            "Prefer":"return=minimal"
+          },
+
+          body:
+            JSON.stringify(productData)
+
+        }
+      );
+
+    }
+
+
+    /* NEW PRODUCT */
+
+    else{
+
+      await request(
+        "/rest/v1/products",
+
+        {
+          method:"POST",
+
+          headers:{
+            "Prefer":"return=minimal"
+          },
+
+          body:
+            JSON.stringify(productData)
+
+        }
+      );
+
+    }
+
+
+    msg.textContent =
+      "✅ Product saved successfully!";
+
+
+    clearForm();
+
+
+    await loadProducts();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    msg.textContent =
+      "❌ Error: " + error.message;
+
+  }
+
+}
+
+
+/* =========================
+   EDIT PRODUCT
+========================= */
+
+function editProduct(id){
+
+  const product =
+    items.find(function(item){
+
+      return String(item.id) ===
+             String(id);
+
+    });
+
+
+  if(!product){
+
+    return;
+
+  }
+
+
+  editId = id;
+
+  nameInput.value =
+    product.name || "";
+
+  priceInput.value =
+    product.price || "";
+
+  categoryInput.value =
+    product.category || "";
+
+  photoInput.value = "";
+
+
+  msg.textContent =
+    "✏️ Editing: " +
+    product.name;
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+
+async function deleteProduct(id){
+
+  if(!confirm("Delete করবেন?")){
+
+    return;
+
+  }
+
+
+  try{
+
+    msg.textContent =
+      "⏳ Deleting...";
+
+
+    await request(
+      "/rest/v1/products?id=eq." +
+      encodeURIComponent(id),
+
+      {
+        method:"DELETE"
+      }
+
+    );
+
+
+    msg.textContent =
+      "✅ Product deleted";
+
+    await loadProducts();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    msg.textContent =
+      "❌ Delete Error: " +
+      error.message;
+
+  }
+
+}
+
+
+/* =========================
+   CLEAR FORM
+========================= */
+
+function clearForm(){
+
+  editId = null;
+
+  nameInput.value = "";
+
+  priceInput.value = "";
+
+  categoryInput.value = "";
+
+  photoInput.value = "";
+
+}
+
+
+/* =========================
+   ADMIN TOGGLE
+========================= */
+
+function toggleAdmin(){
+
+  if(panel.style.display === "block"){
+
+    panel.style.display = "none";
+
+  }else{
+
+    panel.style.display = "block";
+
+    loadProducts();
+
+  }
+
+}
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function whatsappOrder(name, price){
+
+  alert(
+    "WhatsApp number এখনো সেট করা হয়নি.\n\n" +
+    "Order: " +
+    name +
+    " | ৳" +
+    price
+  );
+
+}
+
+
+/* =========================
+   SECURITY / HTML ESCAPE
+========================= */
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      function(character){
+
+        return {
+
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#39;"
+
+        }[character];
+
+      }
+    );
+
+}
+
+
+function safeAttr(value){
+
+  return String(value ?? "")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,"&quot;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
