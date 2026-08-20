@@ -858,18 +858,24 @@ function toggleAdmin(){
 /* =========================
    WHATSAPP
 ========================= */
-
 function whatsappOrder(name, price){
 
-  alert(
-    "WhatsApp number এখনো সেট করা হয়নি.\n\n" +
-    "Order: " +
-    name +
-    " | ৳" +
-    price
+  const phone = "8801321544741";
+
+  const message =
+    "Assalamu Alaikum,%0A%0A" +
+    "আমি এই Product টি Order করতে চাই:%0A%0A" +
+    "Product: " + encodeURIComponent(name) + "%0A" +
+    "Price: ৳" + encodeURIComponent(price) + "%0A%0A" +
+    "Please confirm my order.";
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" + message,
+    "_blank"
   );
 
 }
+
 
 
 /* =========================
